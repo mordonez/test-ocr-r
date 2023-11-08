@@ -14,10 +14,11 @@ url <- "https://www.dropbox.com/scl/fi/ytbh22xy456g4zftiimqq/image_000139.tiff?r
 destfile <- "image_000139.tiff"
 
 # Descarga la imagen
-download.file(url, destfile, mode = "wb")
+#download.file(url, destfile, mode = "wb")
 
 # Lee la imagen
-image <- image_read(destfile)
+#image <- image_read(destfile)
+image <- image_read("image_000139.tiff")
 
 # Preprocess the image (resize, crop, enhance, etc.)
 # image <- image_resize(image, width = 800)
