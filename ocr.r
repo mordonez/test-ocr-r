@@ -45,6 +45,8 @@ process_image_and_extract_datetime <- function(image_path) {
     image_threshold("black", "60%") %>%
     image_despeckle()
 
+  image_write(processed_image, path = paste0("processed_frames/", basename(image_path)))
+
   # Realizar el OCR
   text <- image_ocr(processed_image, options = list(tessedit_char_whitelist = "0123456789:/"))
 
