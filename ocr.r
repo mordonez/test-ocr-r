@@ -69,25 +69,22 @@ df <- data.frame(frame = character(), date = character(), time = character(), st
 
 # Iterar sobre cada archivo de imagen
 for (i in 1:length(image_files)) {
-  # Verificar si las columnas de fecha y hora ya tienen valores
-  if (is.na(df$date[i]) & is.na(df$time[i])) {
-    # Ajustar la ruta al archivo
-    image_path <- paste0("frames/", image_files[i])
+  # Ajustar la ruta al archivo
+  image_path <- paste0("frames/", image_files[i])
 
-    result <- process_image_and_extract_datetime(image_path)
+  result <- process_image_and_extract_datetime(image_path)
 
-    date <- ifelse(is.na(result$date), "", result$date)
-    time <- ifelse(is.na(result$time), "", result$time)
+  date <- ifelse(is.na(result$date), "", result$date)
+  time <- ifelse(is.na(result$time), "", result$time)
 
-    # Añadir los resultados al DataFrame
-    df <- rbind(df, data.frame(frame = image_files[i], date = date, time = time, stringsAsFactors = FALSE))
+  # Añadir los resultados al DataFrame
+  df <- rbind(df, data.frame(frame = image_files[i], date = date, time = time, stringsAsFactors = FALSE))
 
-    # Guardar la fila actual en el archivo CSV
-    if (i == 1) {
-      write.table(df[i, ], "updated_data.csv", sep = ",", row.names = FALSE, col.names = TRUE, na = "")
-    } else {
-      write.table(df[i, ], "updated_data.csv", sep = ",", row.names = FALSE, col.names = FALSE, append = TRUE, na = "")
-    }
+  # Guardar la fila actual en el archivo CSV
+  if (i == 1) {
+    write.table(df[i, ], "updated_data.csv", sep = ",", row.names = FALSE, col.names = TRUE, na = "")
+  } else {
+    write.table(df[i, ], "updated_data.csv", sep = ",", row.names = FALSE, col.names = FALSE, append = TRUE, na = "")
   }
   # Liberar memoria
   gc()
