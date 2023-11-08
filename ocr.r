@@ -29,7 +29,7 @@ process_image_and_extract_datetime <- function(image_path) {
 
   # Verificar si la imagen es nula
   if (is.null(image)) {
-    print(paste("Not reading:", image))
+    print(paste("Not reading:", image_path))
     return(list(date = NA, time = NA))
   }
 
