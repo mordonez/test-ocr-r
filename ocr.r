@@ -38,7 +38,7 @@ process_image_and_extract_datetime <- function(image_path) {
 
   # Procesar la imagen
   processed_image <- image %>%
-    image_crop(geometry_area(x = 0, y = 0, width = 220, height = 90)) %>%
+    image_crop(geometry_area(x = 20, y = 0, width = 150, height = 90)) %>%
     image_resize("200%") %>%
     image_convert(colorspace = "gray") %>%
     image_modulate(brightness = 120, saturation = 0, hue = 100) %>%
