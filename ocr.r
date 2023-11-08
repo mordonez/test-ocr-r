@@ -18,6 +18,20 @@ extract_time <- function(text) {
   return(time[1])
 }
 
+#' Procesa una imagen y extrae la fecha y la hora
+#'
+#' Esta función toma la ruta de una imagen, la procesa para mejorar su legibilidad,
+#' realiza el reconocimiento óptico de caracteres (OCR) para extraer el texto,
+#' y luego extrae la fecha y la hora de ese texto.
+#'
+#' @param image_path La ruta de la imagen a procesar.
+#' @return Una lista con la fecha y la hora extraídas.
+#' @error Si el archivo de imagen no existe o no se puede leer, la función devuelve NA para la fecha y la hora.
+#' @error Si la imagen es nula o no se puede procesar, la función devuelve NA para la fecha y la hora.
+#' @error Si el texto extraído no contiene una fecha y una hora válidas, la función devuelve NA para la fecha y la hora.
+#'
+#' @examples
+#' process_image_and_extract_datetime("path/to/image.jpg")
 process_image_and_extract_datetime <- function(image_path) {
   # Verificar si el archivo existe
   if (!file.exists(image_path)) {
@@ -38,13 +52,20 @@ process_image_and_extract_datetime <- function(image_path) {
 
   # Procesar la imagen
   processed_image <- image %>%
+    # Solo se necesita la parte superior izquierda de la imagen que contiene la fecha y la hora
     image_crop(geometry_area(x = 20, y = 0, width = 150, height = 90)) %>%
+    # Se aumenta para mejor legibilidad
     image_resize("200%") %>%
+    # Se convierte a escala de grises porque el OCR funciona mejor con imágenes en escala de grises
     image_convert(colorspace = "gray") %>%
+    # Se mejora el contraste porque el OCR funciona mejor con imágenes de alto contraste
     image_modulate(brightness = 120, saturation = 0, hue = 100) %>%
+    # Se aplica un umbral para eliminar el ruido
     image_threshold("black", "60%") %>%
+    # Se aplica un filtro para eliminar el ruido
     image_despeckle()
 
+  # Guardar la imagen procesada
   image_write(processed_image, path = paste0("processed_frames/", basename(image_path)))
 
   # Realizar el OCR
@@ -71,7 +92,7 @@ df <- data.frame(frame = character(), date = character(), time = character(), st
 
 # Iterar sobre cada archivo de imagen
 for (i in 1:length(image_files)) {
-  # Ajustar la ruta al archivo
+
   image_path <- paste0("frames/", image_files[i])
 
   result <- process_image_and_extract_datetime(image_path)
