@@ -20,8 +20,11 @@ image <- image_read("image_000139.tiff")
 
 # Realiza el OCR en la imagen
 text <- image %>% 
-  image_convert(colorspace = "gray") %>%
+  image_resize("200%") %>%  # Escala la imagen
+  image_convert(colorspace = "gray") %>%  # Convierte a blanco y negro
   image_modulate(brightness = 130, saturation = 0, hue = 100) %>%
+  image_threshold("black", "60%") %>%  # Binariza la imagen
+  image_despeckle() %>%  # Elimina el ruido
   image_trim() %>%
   image_ocr()
 
