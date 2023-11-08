@@ -1,10 +1,12 @@
 # Install and load required packages
 if (!require("tesseract")) install.packages("tesseract")
 if (!require("magick")) install.packages("magick")
+
 library(tesseract)
 library(magick)
 
 # Load the image
+# Lee la imagen
 # URL de la imagen
 url <- "https://www.dropbox.com/scl/fi/ytbh22xy456g4zftiimqq/image_000139.tiff?rlkey=ez323gfqxxr114bsc5i32o9ie&raw=1"
 
@@ -37,6 +39,14 @@ extract_time_lines <- function(text) {
 # Extract lines with time information
 time_lines <- extract_time_lines(extracted_text)
 
+# Function to extract time from a line using regular expressions
+extract_time_from_line <- function(line) {
+  time_pattern <- "\\b\\d{1,2}(:\\d{2})?\\s*(AM|PM|am|pm)?\\b"
+  times <- regmatches(line, gregexpr(time_pattern, line, ignore.case = TRUE))[[1]]
+  times <- unlist(times)
+  return(times)
+}
+
 if (length(time_lines) >= 2) {
   second_line <- time_lines[2]
   extracted_time <- extract_time_from_line(second_line)
@@ -45,13 +55,7 @@ if (length(time_lines) >= 2) {
   print("No time information found.")
 }
 
-# Function to extract time from a line using regular expressions
-extract_time_from_line <- function(line) {
-  time_pattern <- "\\b\\d{1,2}(:\\d{2})?\\s*(AM|PM|am|pm)?\\b"
-  times <- regmatches(line, gregexpr(time_pattern, line, ignore.case = TRUE))[[1]]
-  times <- unlist(times)
-  return(times)
-}
+
 
 # Extract time from each filtered line
 extracted_times <- lapply(time_lines, extract_time_from_line)
