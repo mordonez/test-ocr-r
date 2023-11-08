@@ -13,7 +13,7 @@ Este proyecto depende de las siguientes bibliotecas de R:
 ## Uso
 
 1. Asegúrate de tener instaladas todas las dependencias.
-2. Ejecuta el script `main.R` para procesar las imágenes y extraer la fecha y la hora.
+2. Ejecuta el script `ocr.r` para procesar las imágenes y extraer la fecha y la hora.
 
 ## Funciones principales
 
