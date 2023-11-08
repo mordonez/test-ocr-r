@@ -23,7 +23,8 @@ text <- image %>%
   image_trim() %>% 
   image_ocr()
 
-//print(paste(text))
+print(paste(text))
+
 # Define una función para extraer la fecha
 extract_date <- function(text) {
   date_pattern <- "\\b\\d{2}/\\d{2}/\\d{2}\\b"  # Patrón para fechas en el formato DD/MM/YY
