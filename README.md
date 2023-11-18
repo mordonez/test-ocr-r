@@ -22,3 +22,8 @@ Este proyecto depende de las siguientes bibliotecas de R:
 ## Datos de salida
 
 El script principal guarda los resultados en un archivo CSV llamado "updated_data.csv". Cada fila del archivo CSV corresponde a una imagen y contiene la fecha y la hora extraídas de la imagen.
+
+# TODO
+
+- [ ] añadir la dirección de las imágenes absoluta y configurable 
+
