@@ -1,5 +1,5 @@
-library(av)
-library(imager)
+if (!require("av")) install.packages("av")
+if (!require("imager")) install.packages("imager")
 
 export_frames <- function(video_path, csv_path) {
   video_info <- av::av_info(video_path)
@@ -17,7 +17,15 @@ export_frames <- function(video_path, csv_path) {
     frames_data <- rbind(frames_data, data.frame(
       frame_ref = i,
       image_path = image_path,
-      time = time_formatted
+      time = time_formatted,
+      lat = 0,
+      lon = 0,
+      deph = 0,
+      hour = 0,
+      time_video = 0,
+      analize = 0,
+      color = 0,
+      observations = 0
     ))
   }
   

@@ -85,7 +85,7 @@ process_image_and_extract_datetime <- function(image_path) {
 ######
 
 # Obtener los nombres de las imágenes en el directorio 'frames'
-image_files <- list.files(path = "frames")
+image_files <- list.files(path = "/workspaces/test-r/frames")
 
 # Crear un DataFrame vacío para almacenar los resultados
 df <- data.frame(frame = character(), date = character(), time = character(), stringsAsFactors = FALSE)
@@ -93,7 +93,7 @@ df <- data.frame(frame = character(), date = character(), time = character(), st
 # Iterar sobre cada archivo de imagen
 for (i in 1:length(image_files)) {
 
-  image_path <- paste0("frames/", image_files[i])
+  image_path <- paste0("/workspaces/test-r/frames/", image_files[i])
 
   result <- process_image_and_extract_datetime(image_path)
 
