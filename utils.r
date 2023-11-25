@@ -87,21 +87,51 @@ process_image_and_extract_datetime <- function(image_path) {
   return(list(date = date, time = time))
 }
 
-export_frames <- function(video_path, csv_path, output_directory) {
-  # Crea el directorio de salida si no existe
+
+#' Exporta los fotogramas de un video como imágenes individuales.
+#'
+#' @param video_path Ruta del video.
+#' @param output_directory Directorio de salida donde se guardarán las imágenes.
+#'
+#' @return NULL
+#'
+#' @details Esta función crea un directorio de salida si no existe y luego extrae los fotogramas del video
+#' a imágenes individuales en formato PNG. La función utiliza la biblioteca 'av' para obtener la duración
+#' del video y extraer los fotogramas.
+#'
+#' @examples
+#' export_frames("video.mp4", "output_frames")
+#'
+#' @export
+export_frames <- function(video_path, output_directory) {
   if (!dir.exists(output_directory)) {
     dir.create(output_directory)
   }
 
-  # Obtiene la duración del video en segundos
   video_info <- av::av_media_info(video_path)
   duration <- video_info$duration
-
-  frames_data <- data.frame()
   av::av_video_images(video = video_path, destdir = output_directory, format = "png", fps = 1)
+}
 
+#' Process frames and save data to CSV
+#'
+#' This function processes a set of image frames and saves the extracted data to a CSV file.
+#'
+#' @param output_directory The directory where the image frames are stored.
+#' @param csv_path The path to the CSV file where the data will be saved.
+#'
+#' @return None
+#'
+#' @examples
+#' process_frames("/path/to/frames", "/path/to/output.csv")
+#'
+#' @export
+process_frames <- function(output_directory, csv_path) {
+  # Function code here
+}
+process_frames <- function(output_directory, csv_path) {
   files <- list.files(output_directory, full.names = TRUE)
-
+  frames_data <- data.frame()
   for (i in 1:length(files)) {
     image_path <- paste0(files[i])
 
@@ -142,6 +172,11 @@ export_frames <- function(video_path, csv_path, output_directory) {
   cat("Frames extraídos y guardados en:", normalizePath(output_directory), "\n")
 }
 
+# Función para recopilar imágenes según un archivo CSV y copiarlas a un directorio de salida.
+# Parámetros:
+# - csv_path: Ruta del archivo CSV que contiene la información de las imágenes.
+# - output_directory: Directorio de salida donde se copiarán las imágenes.
+# - clear_first: Indica si se deben borrar los archivos existentes en el directorio de salida antes de copiar las imágenes. Por defecto es FALSE.
 collect_images <- function(csv_path, output_directory, clear_first = FALSE) {
   # Leer el archivo CSV
   df <- read.csv(csv_path, stringsAsFactors = FALSE)
