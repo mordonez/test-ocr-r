@@ -113,15 +113,15 @@ export_frames <- function(video_path, csv_path, output_directory) {
       frame_ref = i,
       image_path = files[i],
       time = time_formatted,
-      lat = 0,
-      lon = 0,
-      deph = 0,
-      hour = 0,
+      lat = "",
+      lon = "",
+      deph = "",
+      hour = "",
       date_screen = date_screen,
       time_screen = time_screen,
-      analize = 0,
-      color = 0,
-      observations = 0,
+      analize = "",
+      color = "",
+      observations = "",
       stringsAsFactors = FALSE
     ))
     # Guardar la fila actual en el archivo CSV
@@ -135,4 +135,31 @@ export_frames <- function(video_path, csv_path, output_directory) {
   }
   write.csv(frames_data, csv_path, row.names = FALSE)
   cat("Frames extraídos y guardados en:", normalizePath(output_directory), "\n")
+}
+
+analyze_images <- function(csv_path, output_directory, clear_first = FALSE) {
+  # Leer el archivo CSV
+  df <- read.csv(csv_path, stringsAsFactors = FALSE)
+
+  # Crear el directorio 'to_analize' si no existe
+  if (!dir.exists(output_directory)) {
+    dir.create(output_directory)
+  }
+
+  # Si clear_first es TRUE, borrar todos los archivos en el directorio de salida
+  if (clear_first) {
+    file.remove(list.files(path = output_directory, full.names = TRUE))
+  }
+
+  # Iterar sobre cada fila del DataFrame
+  for (i in 1:nrow(df)) {
+    # Si la columna 'analize' es TRUE
+    if (!is.na(df$analize[i]) && df$analize[i] == TRUE) {
+      # Obtener la ruta de la imagen
+      image_path <- df$image_path[i]
+
+      # Copiar la imagen al directorio 'to_analize'
+      file.copy(image_path, output_directory)
+    }
+  }
 }
