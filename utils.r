@@ -55,7 +55,7 @@ process_image_and_extract_datetime <- function(image_path) {
   # Procesar la imagen
   processed_image <- image %>%
     # Solo se necesita la parte superior izquierda de la imagen que contiene la fecha y la hora
-    image_crop(geometry_area(x = 20, y = 0, width = 150, height = 90)) %>%
+    image_crop(geometry_area(x = crop_x, y = crop_y, width = crop_width, height = crop_height)) %>%
     # Se aumenta para mejor legibilidad
     image_resize("200%") %>%
     # Se convierte a escala de grises porque el OCR funciona mejor con imágenes en escala de grises
@@ -66,6 +66,11 @@ process_image_and_extract_datetime <- function(image_path) {
     image_threshold("black", "60%") %>%
     # Se aplica un filtro para eliminar el ruido
     image_despeckle()
+
+  # Crear el directorio 'processed_frames' si no existe
+  if (!dir.exists("processed_frames")) {
+    dir.create("processed_frames")
+  }
 
   # Guardar la imagen procesada
   image_write(processed_image, path = paste0("processed_frames/", basename(image_path)))
