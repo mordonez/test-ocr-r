@@ -1,8 +1,12 @@
 # Instala y carga los paquetes necesarios
 if (!require("tesseract")) install.packages("tesseract")
 if (!require("magick")) install.packages("magick")
+if (!require("av")) install.packages("av")
+if (!require("jpeg")) install.packages("jpeg")
 library(tesseract)
 library(magick)
+library(av)
+library(jpeg)
 
 # Define una función para extraer la fecha
 extract_date <- function(text) {
@@ -80,35 +84,58 @@ process_image_and_extract_datetime <- function(image_path) {
   return(list(date = date, time = time))
 }
 
-######
-# Main
-######
-
-# Obtener los nombres de las imágenes en el directorio 'frames'
-image_files <- list.files(path = "/workspaces/test-r/frames")
-
-# Crear un DataFrame vacío para almacenar los resultados
-df <- data.frame(frame = character(), date = character(), time = character(), stringsAsFactors = FALSE)
-
-# Iterar sobre cada archivo de imagen
-for (i in 1:length(image_files)) {
-
-  image_path <- paste0("/workspaces/test-r/frames/", image_files[i])
-
-  result <- process_image_and_extract_datetime(image_path)
-
-  date <- ifelse(is.na(result$date), "", result$date)
-  time <- ifelse(is.na(result$time), "", result$time)
-
-  # Añadir los resultados al DataFrame
-  df <- rbind(df, data.frame(frame = image_files[i], date = date, time = time, stringsAsFactors = FALSE))
-
-  # Guardar la fila actual en el archivo CSV
-  if (i == 1) {
-    write.table(df[i, ], "updated_data.csv", sep = ",", row.names = FALSE, col.names = TRUE, na = "")
-  } else {
-    write.table(df[i, ], "updated_data.csv", sep = ",", row.names = FALSE, col.names = FALSE, append = TRUE, na = "")
+export_frames <- function(video_path, csv_path, output_directory) {
+  # Crea el directorio de salida si no existe
+  if (!dir.exists(output_directory)) {
+    dir.create(output_directory)
   }
-  # Liberar memoria
-  gc()
+  
+  # Obtiene la duración del video en segundos
+  video_info <- av::av_media_info(video_path)
+  duration <- video_info$duration
+  
+   frames_data <- data.frame()
+   av::av_video_images(video = video_path, destdir = output_directory, format = "png", fps = 1)
+
+    files <- list.files(output_directory, full.names = TRUE)
+  
+  for (i in 1:length(files)) {
+
+    image_path <- paste0(files[i])
+
+    result <- process_image_and_extract_datetime(image_path)
+
+    date_screen <- ifelse(is.na(result$date), "", result$date)
+    time_screen <- ifelse(is.na(result$time), "", result$time)
+    
+    time <- as.POSIXct(i, origin = "1970-01-01", tz = "UTC")
+    time_formatted <- format(time, "%H:%M:%S")
+
+    # Añadir los resultados al DataFrame
+    frames_data <- rbind(frames_data, data.frame(
+      frame_ref = i,
+      image_path = files[i], 
+      time = time_formatted,
+      lat = 0,
+      lon = 0,
+      deph = 0,
+      hour = 0,
+      date_screen = date_screen, 
+      time_screen = time_screen, 
+      analize = 0,
+      color = 0,
+      observations = 0,
+      stringsAsFactors = FALSE))
+    # Guardar la fila actual en el archivo CSV
+    if (i == 1) {
+      write.table(frames_data[i, ], csv_path, sep = ",", row.names = FALSE, col.names = TRUE, na = "")
+    } else {
+      write.table(frames_data[i, ], csv_path, sep = ",", row.names = FALSE, col.names = FALSE, append = TRUE, na = "")
+    }
+    # Liberar memoria
+    gc()
+  }
+  write.csv(frames_data, csv_path, row.names = FALSE)
+  cat("Frames extraídos y guardados en:", normalizePath(output_directory), "\n")
 }
+

@@ -1,4 +1,4 @@
-source("frames.r")  # Asegúrate de que este es el camino correcto al archivo que contiene la función export_frames
+source("utils/ocr.r") 
 
 video_path <- "video.mp4"  # Reemplaza esto con la ruta al video que quieres procesar
 csv_path <- "frames.csv"  # Reemplaza esto con la ruta al archivo CSV donde quieres guardar los datos
