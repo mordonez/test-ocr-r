@@ -87,43 +87,43 @@ export_frames <- function(video_path, csv_path, output_directory) {
   if (!dir.exists(output_directory)) {
     dir.create(output_directory)
   }
-  
+
   # Obtiene la duración del video en segundos
   video_info <- av::av_media_info(video_path)
   duration <- video_info$duration
-  
-   frames_data <- data.frame()
-   av::av_video_images(video = video_path, destdir = output_directory, format = "png", fps = 1)
 
-    files <- list.files(output_directory, full.names = TRUE)
-  
+  frames_data <- data.frame()
+  av::av_video_images(video = video_path, destdir = output_directory, format = "png", fps = 1)
+
+  files <- list.files(output_directory, full.names = TRUE)
+
   for (i in 1:length(files)) {
-
     image_path <- paste0(files[i])
 
     result <- process_image_and_extract_datetime(image_path)
 
     date_screen <- ifelse(is.na(result$date), "", result$date)
     time_screen <- ifelse(is.na(result$time), "", result$time)
-    
+
     time <- as.POSIXct(i, origin = "1970-01-01", tz = "UTC")
     time_formatted <- format(time, "%H:%M:%S")
 
     # Añadir los resultados al DataFrame
     frames_data <- rbind(frames_data, data.frame(
       frame_ref = i,
-      image_path = files[i], 
+      image_path = files[i],
       time = time_formatted,
       lat = 0,
       lon = 0,
       deph = 0,
       hour = 0,
-      date_screen = date_screen, 
-      time_screen = time_screen, 
+      date_screen = date_screen,
+      time_screen = time_screen,
       analize = 0,
       color = 0,
       observations = 0,
-      stringsAsFactors = FALSE))
+      stringsAsFactors = FALSE
+    ))
     # Guardar la fila actual en el archivo CSV
     if (i == 1) {
       write.table(frames_data[i, ], csv_path, sep = ",", row.names = FALSE, col.names = TRUE, na = "")
@@ -136,4 +136,3 @@ export_frames <- function(video_path, csv_path, output_directory) {
   write.csv(frames_data, csv_path, row.names = FALSE)
   cat("Frames extraídos y guardados en:", normalizePath(output_directory), "\n")
 }
-
