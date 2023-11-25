@@ -137,7 +137,7 @@ export_frames <- function(video_path, csv_path, output_directory) {
   cat("Frames extraídos y guardados en:", normalizePath(output_directory), "\n")
 }
 
-analyze_images <- function(csv_path, output_directory, clear_first = FALSE) {
+collect_images <- function(csv_path, output_directory, clear_first = FALSE) {
   # Leer el archivo CSV
   df <- read.csv(csv_path, stringsAsFactors = FALSE)
 

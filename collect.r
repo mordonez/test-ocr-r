@@ -4,4 +4,4 @@ csv_path <- "/workspaces/test-r/frames.csv"  # Reemplaza esto con la ruta al arc
 image_dir <- "/workspaces/test-r/frames_analize"  # Reemplaza esto con la ruta al directorio donde quieres guardar las imágenes
 clear_first <- TRUE
 
-analyze_images(csv_path, image_dir, clear_first)
+collect_images(csv_path, image_dir, clear_first)
