@@ -2,11 +2,9 @@
 if (!require("tesseract")) install.packages("tesseract")
 if (!require("magick")) install.packages("magick")
 if (!require("av")) install.packages("av")
-if (!require("jpeg")) install.packages("jpeg")
 library(tesseract)
 library(magick)
 library(av)
-library(jpeg)
 
 # Define una función para extraer la fecha
 extract_date <- function(text) {
